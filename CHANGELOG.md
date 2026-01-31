@@ -1,3 +1,7 @@
+## 0.0.3
+- Add core UI components: select, card, badge, checkbox, switch, textarea, radio,
+  tabs, toast, dialog.
+
 ## 0.0.2
 - Add minimal example documentation for pub.dev scoring.
 - Add dartdoc comments for public API items.
