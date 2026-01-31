@@ -47,9 +47,9 @@ Key ideas:
 - `README.md`: end-user docs.
 
 ## How to Add a Component
-1. Add a new template string in `bin/flad_cli.dart`:
-   - Example name: `_cardDart`.
-2. Register it in `componentTemplates`:
+1. Add a new template string in `lib/src/templates/`:
+   - Example file: `card.dart` with `const cardTemplate = '''...'''`.
+2. Register it in `lib/src/templates.dart`:
    - `'card': cardTemplate`
 3. Ensure it is a standalone Dart file.
 4. Use ThemeExtension for styling (no hardcoded colors).

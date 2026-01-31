@@ -1,3 +1,10 @@
+## Unreleased
+- Add multi-component `flad add` support with typo suggestions.
+- Add list output modes (`--plain`, `--json`).
+- Add new UI templates: app_bar, bottom_nav, navigation_rail, drawer, search_bar,
+  alert, empty_state, skeleton, divider, pagination, breadcrumb, rating.
+- Add CLI test coverage.
+
 ## 0.0.3
 - Add core UI components: select, card, badge, checkbox, switch, textarea, radio,
   tabs, toast, dialog.
