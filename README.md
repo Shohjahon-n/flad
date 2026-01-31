@@ -35,24 +35,32 @@ flad add button --path lib/shared/ui
 ```
 
 Default target:
-- `flad add button` -> `lib/ui/button.dart`
+- `flad add button` -> `lib/ui/button.dart` (agar init paytida boshqacha tanlanmagan bo'lsa)
 
 Custom target:
 - `flad add button --path lib/shared/ui` -> `lib/shared/ui/button.dart`
 
+## Init paytida path tanlash
+`flad init` ishga tushganda CLI sizdan target papkani so'raydi. Default qiymat:
+```
+lib/ui
+```
+Tanlangan path `.flad.json` faylida saqlanadi va keyingi `add` buyruqlarida ishlatiladi.
+
 ## Hozirgi komponentlar
 - button
+- input
 
 ## Yangi komponent qo'shish
-`bin/flad_cli.dart` ichida:
-- `_componentTemplates` map ga yangi key qo'shing
-- Shu komponent uchun Dart template string yarating
+`lib/src/templates/` ichida:
+- yangi template string fayl yarating
+- `lib/src/templates.dart` ichida ro'yxatga qo'shing
 
 Namuna:
 ```
-const _componentTemplates = {
-  'button': _buttonDart,
-  'card': _cardDart,
+const componentTemplates = {
+  'button': buttonTemplate,
+  'card': cardTemplate,
 };
 ```
 
@@ -67,4 +75,3 @@ const _componentTemplates = {
 dart pub get
 dart run bin/flad_cli.dart --help
 ```
-# flad

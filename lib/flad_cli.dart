@@ -1,3 +1,3 @@
-int calculate() {
-  return 6 * 7;
-}
+import 'src/cli.dart';
+
+Future<void> run(List<String> arguments) => FladCli().run(arguments);

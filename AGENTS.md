@@ -24,29 +24,33 @@ Build a Dart CLI tool that behaves like shadcn/ui for Flutter:
 - CLI is pure Dart; uses `args` and `path`.
 
 ## Current Implementation Overview
-Main entrypoint: `bin/flad_cli.dart`.
+Main entrypoint: `bin/flad_cli.dart` (thin wrapper).
 
 Key ideas:
 - The CLI builds all component files from template strings.
-- Component templates are stored in `_componentTemplates` map.
+- Component templates are stored in `componentTemplates` map.
 - Each component is written to `<targetDir>/<component>.dart`.
 - `init` only ensures the default directory exists.
 
 ## File Layout
-- `bin/flad_cli.dart`:
+- `bin/flad_cli.dart`: minimal wrapper that calls the library entrypoint.
+- `lib/flad_cli.dart`: public entrypoint (`run()`).
+- `lib/src/cli.dart`:
   - Arg parsing (`args` package).
   - Command dispatch (`init`, `add`).
   - Validation for Flutter project (`lib/`).
   - File creation + no-overwrite checks.
-  - Component templates (inline Dart strings).
-- `lib/flad_cli.dart`: unused placeholder (safe to ignore or repurpose).
+  - Config load/save and prompt logic.
+- `lib/src/config.dart`: reads/writes `.flad.json`.
+- `lib/src/constants.dart`: shared constants.
+- `lib/src/templates/`: component templates as strings.
 - `README.md`: end-user docs.
 
 ## How to Add a Component
 1. Add a new template string in `bin/flad_cli.dart`:
    - Example name: `_cardDart`.
-2. Register it in `_componentTemplates`:
-   - `'card': _cardDart`
+2. Register it in `componentTemplates`:
+   - `'card': cardTemplate`
 3. Ensure it is a standalone Dart file.
 4. Use ThemeExtension for styling (no hardcoded colors).
 
@@ -94,4 +98,3 @@ Key ideas:
 dart pub get
 dart run bin/flad_cli.dart --help
 ```
-
