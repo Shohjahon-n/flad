@@ -2,32 +2,32 @@
 
 Flutter UI component copier for Flutter projects.
 
-## Maqsad
-- Flutter UI komponentlarini paket sifatida emas, **source file** sifatida projectga ko'chirish.
-- Foydalanuvchi ko'chirilgan kodni to'liq tahrir qilishi mumkin.
-- Minimal, unopinionated, vendor lock-in yo'q.
+## Goal
+- Copy Flutter UI components as **source files**, not as packages.
+- Users can fully edit the copied code.
+- Minimal, unopinionated, no vendor lock-in.
 
-## Nima kerak
+## Requirements
 - Dart SDK (>= 3.3.0)
-- Flutter project (kamida `lib/` papkasi bo'lishi kerak)
+- A Flutter project (must have a `lib/` directory)
 
-## Qanday ishlaydi
-CLI komponent shablonlarini (Dart string) tanlaydi va:
-- Flutter projectdagi `lib/` borligini tekshiradi
-- Target papkani yaratadi
-- Fayl bor bo'lsa ustidan yozmaydi
-- Aniq console xabarlar chiqaradi
+## How it works
+The CLI selects a component template (Dart string) and:
+- Verifies `lib/` exists
+- Creates the target directory
+- Prevents overwriting existing files
+- Prints clear console messages
 
-Ko'chirilgan fayllar **CLIga bog'liq emas**. Ya'ni, keyin komponentlar mustaqil ishlaydi.
+Copied files are **independent of the CLI** and work on their own.
 
-## Buyruqlar
+## Commands
 ```
 flad init
 flad add <component>
 flad add <component> --path <custom_path>
 ```
 
-## Misollar
+## Examples
 ```
 flad init
 flad add button
@@ -35,28 +35,28 @@ flad add button --path lib/shared/ui
 ```
 
 Default target:
-- `flad add button` -> `lib/ui/button.dart` (agar init paytida boshqacha tanlanmagan bo'lsa)
+- `flad add button` -> `lib/ui/button.dart` (unless a custom path was set in init)
 
 Custom target:
 - `flad add button --path lib/shared/ui` -> `lib/shared/ui/button.dart`
 
-## Init paytida path tanlash
-`flad init` ishga tushganda CLI sizdan target papkani so'raydi. Default qiymat:
+## Init-time path prompt
+When you run `flad init`, the CLI asks for a target directory. Default:
 ```
 lib/ui
 ```
-Tanlangan path `.flad.json` faylida saqlanadi va keyingi `add` buyruqlarida ishlatiladi.
+The chosen path is saved to `.flad.json` and used by future `add` commands.
 
-## Hozirgi komponentlar
+## Current components
 - button
 - input
 
-## Yangi komponent qo'shish
-`lib/src/templates/` ichida:
-- yangi template string fayl yarating
-- `lib/src/templates.dart` ichida ro'yxatga qo'shing
+## Add a new component
+Inside `lib/src/templates/`:
+- create a new template string file
+- register it in `lib/src/templates.dart`
 
-Namuna:
+Example:
 ```
 const componentTemplates = {
   'button': buttonTemplate,
@@ -64,13 +64,13 @@ const componentTemplates = {
 };
 ```
 
-## Dizayn falsafasi
+## Design philosophy
 - Minimal
 - Unopinionated
-- Paket import qilinmaydi
-- Kod ochiq va tahrirlashga tayyor
+- No package imports for components
+- Easy to read and modify
 
-## Ishga tushirish (local)
+## Run locally
 ```
 dart pub get
 dart run bin/flad_cli.dart --help
