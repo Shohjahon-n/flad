@@ -1,3 +1,4 @@
+/// Template for the Input component source file.
 const inputTemplate = '''
 import 'package:flutter/material.dart';
 

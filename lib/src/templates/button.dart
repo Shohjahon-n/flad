@@ -1,3 +1,4 @@
+/// Template for the Button component source file.
 const buttonTemplate = '''
 import 'package:flutter/material.dart';
 

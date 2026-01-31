@@ -8,6 +8,7 @@ import 'constants.dart';
 import 'project.dart';
 import 'templates.dart';
 
+/// CLI runner for flad commands.
 class FladCli {
   static const _brand = 'flad';
 

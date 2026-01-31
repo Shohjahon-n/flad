@@ -1,5 +1,6 @@
 import 'dart:io';
 
+/// Returns true if the current directory looks like a Flutter project.
 Future<bool> ensureFlutterProject(
     {void Function(String message)? onError}) async {
   final libDir = Directory('lib');
