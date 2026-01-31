@@ -328,14 +328,6 @@ class FladCli {
     _printSuccess('All set. Happy hacking!');
   }
 
-  Future<void> _add(
-    String component,
-    String? overridePath, {
-    bool dryRun = false,
-  }) async {
-    await _addMany([component], overridePath, dryRun: dryRun);
-  }
-
   Future<void> _addMany(
     List<String> components,
     String? overridePath, {
