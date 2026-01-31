@@ -9,6 +9,8 @@ import 'project.dart';
 import 'templates.dart';
 
 class FladCli {
+  static const _brand = 'flad';
+
   Future<void> run(List<String> arguments) async {
     final parser = _buildParser();
 
@@ -84,35 +86,59 @@ class FladCli {
   }
 
   void _printUsage(ArgParser parser) {
-    stdout.writeln('flad - shadcn-style Flutter UI copier');
+    stdout.writeln(_style('flad - Flutter UI component copier', [1, 36]));
     stdout.writeln('');
-    stdout.writeln('Usage:');
+    stdout.writeln(_style('Usage:', [1]));
     stdout.writeln('  flad init');
     stdout.writeln('  flad add <component> [--path <dir>]');
     stdout.writeln('');
-    stdout.writeln('Examples:');
+    stdout.writeln(_style('Examples:', [1]));
     stdout.writeln('  flad init');
     stdout.writeln('  flad add button');
     stdout.writeln('  flad add input --path lib/shared/ui');
     stdout.writeln('');
-    stdout.writeln('Options:');
+    stdout.writeln(_style('Options:', [1]));
     stdout.writeln(parser.usage);
   }
 
   void _printAddUsage(ArgParser parser) {
-    stdout.writeln('Usage:');
+    stdout.writeln(_style('Usage:', [1]));
     stdout.writeln('  flad add <component> [--path <dir>]');
     stdout.writeln('');
-    stdout.writeln('Options:');
+    stdout.writeln(_style('Options:', [1]));
     final addCommand = parser.commands['add'];
     if (addCommand != null) {
       stdout.writeln(addCommand.usage);
     }
-    stdout.writeln('Available components: ${componentTemplates.keys.join(', ')}');
+    _printInfo(
+      'Available components: ${componentTemplates.keys.join(', ')}',
+    );
   }
 
   void _printError(String message) {
-    stderr.writeln('Error: $message');
+    stderr.writeln(_style('[$_brand] $message', [31], isStderr: true));
+  }
+
+  void _printInfo(String message) {
+    stdout.writeln(_style('[$_brand] $message', [36]));
+  }
+
+  void _printSuccess(String message) {
+    stdout.writeln(_style('[$_brand] $message', [32]));
+  }
+
+  void _printWarn(String message) {
+    stdout.writeln(_style('[$_brand] $message', [33]));
+  }
+
+  String _style(String text, List<int> codes, {bool isStderr = false}) {
+    final useColor =
+        isStderr ? stderr.supportsAnsiEscapes : stdout.supportsAnsiEscapes;
+    if (!useColor) {
+      return text;
+    }
+    final sequence = codes.join(';');
+    return '\x1B[${sequence}m$text\x1B[0m';
   }
 
   Future<void> _init() async {
@@ -132,7 +158,9 @@ class FladCli {
     await _ensureDirectory(targetDir);
 
     await writeConfig(FladConfig(targetDir: targetDir));
-    stdout.writeln('Saved config: ${configPath()}');
+    _printSuccess('Init complete. Target: $targetDir');
+    _printInfo('Saved config: ${configPath()}');
+    _printSuccess('All set. Happy hacking!');
   }
 
   Future<void> _add(String component, String? overridePath) async {
@@ -145,7 +173,7 @@ class FladCli {
     final template = componentTemplates[component];
     if (template == null) {
       _printError('Unknown component: $component');
-      stdout.writeln('Available components: ${componentTemplates.keys.join(', ')}');
+      _printInfo('Available components: ${componentTemplates.keys.join(', ')}');
       exitCode = 64;
       return;
     }
@@ -167,11 +195,13 @@ class FladCli {
     }
 
     await outputFile.writeAsString(template);
-    stdout.writeln('Added: ${p.normalize(outputFile.path)}');
+    _printSuccess('Added component: $component');
+    _printInfo('Path: ${p.normalize(outputFile.path)}');
+    _printSuccess('Ready to ship. Happy hacking!');
   }
 
   String _promptForTargetDir() {
-    stdout.write('Target directory [$defaultTargetDir]: ');
+    stdout.write(_style('Target directory [$defaultTargetDir]: ', [36]));
     final input = stdin.readLineSync();
     final trimmed = input?.trim() ?? '';
     return trimmed.isEmpty ? defaultTargetDir : trimmed;
@@ -181,11 +211,11 @@ class FladCli {
     final resolvedDir = p.normalize(path);
     final dir = Directory(resolvedDir);
     if (await dir.exists()) {
-      stdout.writeln('Using existing directory: ${dir.path}');
+      _printInfo('Using existing directory: ${dir.path}');
       return;
     }
     await dir.create(recursive: true);
-    stdout.writeln('Created directory: ${dir.path}');
+    _printSuccess('Created directory: ${dir.path}');
   }
 
   Future<String?> _resolveTargetDir(String? overridePath) async {
@@ -200,6 +230,7 @@ class FladCli {
       }
     } on FormatException catch (error) {
       _printError('Invalid $configFileName: ${error.message}');
+      _printWarn('Run "flad init" to recreate the config.');
       return null;
     }
 

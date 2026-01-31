@@ -1,6 +1,8 @@
 name: flad_cli
-description: Flutter UI component scaffolding tool
+description: Flutter UI component copier CLI for Flutter projects.
 version: 0.0.1
+repository: https://github.com/Shohjahon-n/flad
+homepage: https://github.com/Shohjahon-n/flad
 
 environment:
   sdk: '>=3.3.0 <4.0.0'

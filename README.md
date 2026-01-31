@@ -1,6 +1,6 @@
 # flad
 
-Shadcn-style Flutter UI CLI tool.
+Flutter UI component copier for Flutter projects.
 
 ## Maqsad
 - Flutter UI komponentlarini paket sifatida emas, **source file** sifatida projectga ko'chirish.

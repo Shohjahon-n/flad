@@ -1,11 +1,11 @@
 # AGENTS.md
 
 This file is for other AI agents working on this repo. It explains the goal,
-architecture, and how to extend the CLI without breaking the shadcn-style
+architecture, and how to extend the CLI without breaking the design
 requirements.
 
 ## Project Goal
-Build a Dart CLI tool that behaves like shadcn/ui for Flutter:
+Build a Dart CLI tool for Flutter:
 - Components are copied into the user’s Flutter project as source files.
 - No runtime dependency on this CLI after copy.
 - Minimal, unopinionated, and fully customizable by the user.
