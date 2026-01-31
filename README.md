@@ -74,6 +74,7 @@ Copied files are **independent** of the CLI and work on their own.
 | `flad list`                         | List available components.                       |
 | `flad list --plain`                 | List only component names.                       |
 | `flad list --json`                  | List as JSON for scripts.                        |
+| `flad preview <component>`          | Preview component details.                       |
 | `flad config`                       | Show saved config.                               |
 | `flad doctor`                       | Check project + config health.                   |
 
@@ -94,6 +95,7 @@ flad init
 flad add button
 flad add button card input
 flad add button --path lib/shared/ui
+flad preview button
 ```
 
 ## Current components

@@ -1,4 +1,11 @@
+## 0.0.6 - 2026-01-31
+- Add `flad preview` for component details.
+- Refresh docs and examples.
+
 ## 0.0.5 - 2026-01-31
+- Trim README to user-focused content.
+
+## 0.0.4 - 2026-01-31
 - Add multi-component `flad add` support with typo suggestions.
 - Add list output modes (`--plain`, `--json`).
 - Add new UI templates: app_bar, bottom_nav, navigation_rail, drawer, search_bar,

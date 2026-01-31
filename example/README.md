@@ -20,3 +20,8 @@ flad add button card input
 ```
 flad add button --path lib/shared/ui
 ```
+
+## Preview a component
+```
+flad preview button
+```

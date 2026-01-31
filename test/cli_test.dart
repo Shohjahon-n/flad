@@ -160,6 +160,16 @@ void main() {
     expect(result.stdout.contains('Did you mean: button'), isTrue);
   });
 
+  test('preview outputs component details', () async {
+    final dir = await Directory.systemTemp.createTemp('flad_cli_test');
+    addTearDown(() async => dir.delete(recursive: true));
+
+    final result = await _runCli(['preview', 'button'], workingDir: dir);
+    expect(result.exitCode, 0);
+    expect(result.stdout.contains('Component: button'), isTrue);
+    expect(result.stdout.contains('Widget: FladButton'), isTrue);
+  });
+
   test('add does not overwrite existing files', () async {
     final dir = await Directory.systemTemp.createTemp('flad_cli_test');
     addTearDown(() async => dir.delete(recursive: true));

@@ -92,6 +92,22 @@ class FladCli {
         }
         _listComponents(asJson: asJson, plain: plain);
         break;
+      case 'preview':
+        if (command['help'] as bool? ?? false) {
+          _printPreviewUsage(parser);
+          return;
+        }
+        final component =
+            command.rest.isEmpty ? null : command.rest.first.trim();
+        if (component == null || component.isEmpty) {
+          _printError('Missing component name.');
+          _printPreviewUsage(parser);
+          exitCode = 64;
+          return;
+        }
+        final overridePath = (command['path'] as String?)?.trim();
+        await _preview(component, overridePath);
+        break;
       case 'config':
         if (command['help'] as bool) {
           _printConfigUsage(parser);
@@ -179,6 +195,21 @@ class FladCli {
           ),
       )
       ..addCommand(
+        'preview',
+        ArgParser()
+          ..addOption(
+            'path',
+            abbr: 'p',
+            help: 'Target directory hint for the output file.',
+          )
+          ..addFlag(
+            'help',
+            abbr: 'h',
+            negatable: false,
+            help: 'Show help for the preview command.',
+          ),
+      )
+      ..addCommand(
         'config',
         ArgParser()
           ..addOption(
@@ -210,6 +241,7 @@ class FladCli {
     stdout.writeln('  flad add <component> <component> [--path <dir>]');
     stdout.writeln('  flad add --all [--path <dir>]');
     stdout.writeln('  flad list');
+    stdout.writeln('  flad preview <component>');
     stdout.writeln('  flad config [--set <dir> | --reset]');
     stdout.writeln('  flad doctor');
     stdout.writeln('');
@@ -220,6 +252,7 @@ class FladCli {
     stdout.writeln('  flad add input --path lib/shared/ui');
     stdout.writeln('  flad add --all');
     stdout.writeln('  flad list');
+    stdout.writeln('  flad preview button');
     stdout.writeln('');
     stdout.writeln(_style('Options:', [1]));
     stdout.writeln(parser.usage);
@@ -275,6 +308,18 @@ class FladCli {
     final listCommand = parser.commands['list'];
     if (listCommand != null) {
       stdout.writeln(listCommand.usage);
+    }
+  }
+
+  void _printPreviewUsage(ArgParser parser) {
+    stdout.writeln(_style('Usage:', [1]));
+    stdout.writeln('  flad preview <component>');
+    stdout.writeln('  flad preview <component> --path <dir>');
+    stdout.writeln('');
+    stdout.writeln(_style('Options:', [1]));
+    final previewCommand = parser.commands['preview'];
+    if (previewCommand != null) {
+      stdout.writeln(previewCommand.usage);
     }
   }
 
@@ -405,6 +450,38 @@ class FladCli {
     if (!dryRun) {
       _printSuccess('Ready to ship. Happy hacking!');
     }
+  }
+
+  Future<void> _preview(String component, String? overridePath) async {
+    final template = componentTemplates[component];
+    if (template == null) {
+      _printError('Unknown component: $component');
+      final suggestions = _suggestComponents(component);
+      if (suggestions.isNotEmpty) {
+        _printInfo('Did you mean: ${suggestions.join(', ')}');
+      } else {
+        _printInfo('Available components: ${componentTemplates.keys.join(', ')}');
+      }
+      exitCode = 64;
+      return;
+    }
+
+    final description = componentDescriptions[component] ?? 'No description.';
+    final widgetName = _toPascalCase(component);
+    final targetDir = await _resolvePreviewTargetDir(overridePath);
+    final outputPath = p.join(targetDir, '$component.dart');
+
+    _printInfo('Component: $component');
+    _printInfo('Description: $description');
+    _printInfo('Widget: Flad$widgetName');
+    _printInfo('Output file: ${p.normalize(outputPath)}');
+    stdout.writeln('');
+    stdout.writeln('Example usage:');
+    stdout.writeln('  Flad$widgetName(');
+    stdout.writeln('    // ...');
+    stdout.writeln('  );');
+    stdout.writeln('');
+    _printInfo('To add: flad add $component');
   }
 
   Future<void> _addAll(
@@ -594,6 +671,22 @@ class FladCli {
     return defaultTargetDir;
   }
 
+  Future<String> _resolvePreviewTargetDir(String? overridePath) async {
+    if (overridePath != null && overridePath.trim().isNotEmpty) {
+      return overridePath.trim();
+    }
+    try {
+      final config = await readConfig();
+      if (config != null) {
+        return config.targetDir;
+      }
+    } on FormatException catch (error) {
+      _printWarn('Invalid $configFileName: ${error.message}');
+      _printWarn('Using default target directory.');
+    }
+    return defaultTargetDir;
+  }
+
   Future<_AddResult> _writeComponent(
     String component,
     String targetDir, {
@@ -680,6 +773,15 @@ class FladCli {
     }
 
     return rows[a.length][b.length];
+  }
+
+  String _toPascalCase(String value) {
+    final parts = value
+        .split(RegExp(r'[_\\s-]+'))
+        .where((part) => part.isNotEmpty);
+    return parts
+        .map((part) => part[0].toUpperCase() + part.substring(1))
+        .join();
   }
 }
 
