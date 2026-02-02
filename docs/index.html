@@ -1,0 +1,297 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Flad - Flutter UI component copier</title>
+    <meta
+      name="description"
+      content="Flad copies Flutter UI components into your project as plain Dart files. No runtime dependency."
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Space+Grotesk:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="bg-blobs">
+      <span class="blob blob-a"></span>
+      <span class="blob blob-b"></span>
+      <span class="blob blob-c"></span>
+    </div>
+
+    <header class="site-header">
+      <div class="container nav">
+        <div class="brand">
+          <div class="logo">flad</div>
+          <div class="tag">Flutter UI component copier</div>
+        </div>
+        <nav class="nav-links">
+          <a href="#features">Features</a>
+          <a href="#quickstart">Quickstart</a>
+          <a href="#commands">Commands</a>
+          <a href="#components">Components</a>
+          <a href="#presets">Presets</a>
+        </nav>
+      </div>
+    </header>
+
+    <main>
+      <section class="hero container">
+        <div class="hero-copy">
+          <p class="eyebrow">Copy. Own. Customize.</p>
+          <h1>Flad ships UI components into your Flutter repo.</h1>
+          <p class="lead">
+            Flad is a tiny CLI that copies polished UI widgets into your project
+            as plain Dart files. You own the code, tweak it freely, and ship fast.
+          </p>
+          <div class="hero-actions">
+            <a class="btn primary" href="#quickstart">Get started</a>
+            <a class="btn ghost" href="#commands">View commands</a>
+          </div>
+          <div class="hero-chips">
+            <span>No runtime dependency</span>
+            <span>ThemeExtension tokens</span>
+            <span>Registry ready</span>
+          </div>
+        </div>
+        <div class="hero-card">
+          <div class="terminal">
+            <div class="terminal-header">
+              <span></span>
+              <span></span>
+              <span></span>
+            </div>
+            <pre><code>$ dart pub global activate flad_cli
+$ flad init
+$ flad add button card input</code></pre>
+          </div>
+          <div class="stats">
+            <div class="stat">
+              <div class="stat-label">Components</div>
+              <div class="stat-value">40+</div>
+            </div>
+            <div class="stat">
+              <div class="stat-label">Commands</div>
+              <div class="stat-value">10+</div>
+            </div>
+            <div class="stat">
+              <div class="stat-label">Runtime deps</div>
+              <div class="stat-value">0</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="features" class="section container">
+        <div class="section-head">
+          <h2>Why teams pick Flad</h2>
+          <p>Source-first components with zero lock-in.</p>
+        </div>
+        <div class="grid features">
+          <div class="card">
+            <h3>Source-first</h3>
+            <p>Everything is copied into your repo. No hidden runtime package.</p>
+          </div>
+          <div class="card">
+            <h3>ThemeExtension tokens</h3>
+            <p>Each component ships with tokens tied to your ColorScheme.</p>
+          </div>
+          <div class="card">
+            <h3>Dependency aware</h3>
+            <p>Add one component and Flad auto-copies what it depends on.</p>
+          </div>
+          <div class="card">
+            <h3>Remote registry</h3>
+            <p>Fetch templates from GitHub when you want the latest updates.</p>
+          </div>
+        </div>
+      </section>
+
+      <section id="quickstart" class="section container">
+        <div class="section-head">
+          <h2>Quickstart</h2>
+          <p>Install once, then copy components in seconds.</p>
+        </div>
+        <div class="grid quickstart">
+          <div class="card">
+            <h3>Install</h3>
+            <pre><code>dart pub global activate flad_cli</code></pre>
+          </div>
+          <div class="card">
+            <h3>Init</h3>
+            <pre><code>flad init</code></pre>
+          </div>
+          <div class="card">
+            <h3>Add components</h3>
+            <pre><code>flad add button card input</code></pre>
+          </div>
+        </div>
+      </section>
+
+      <section id="commands" class="section container">
+        <div class="section-head">
+          <h2>Commands</h2>
+          <p>Every command is small, explicit, and predictable.</p>
+        </div>
+        <div class="grid commands">
+          <div class="card">
+            <h3>Init</h3>
+            <p>Creates the target directory and generates theme tokens.</p>
+            <code>flad init --style default</code>
+          </div>
+          <div class="card">
+            <h3>Add</h3>
+            <p>Add one or many components. No overwrite unless asked.</p>
+            <code>flad add button card</code>
+          </div>
+          <div class="card">
+            <h3>Registry</h3>
+            <p>Fetch components from the remote registry.</p>
+            <code>flad add button --registry</code>
+          </div>
+          <div class="card">
+            <h3>List + preview</h3>
+            <p>Browse components and inspect metadata.</p>
+            <code>flad list --json</code>
+          </div>
+          <div class="card">
+            <h3>Diff + remove</h3>
+            <p>Compare or remove local copies when needed.</p>
+            <code>flad diff button</code>
+          </div>
+          <div class="card">
+            <h3>Doctor</h3>
+            <p>Validate project and config health in one run.</p>
+            <code>flad doctor</code>
+          </div>
+        </div>
+      </section>
+
+      <section id="components" class="section container">
+        <div class="section-head">
+          <h2>Component catalog</h2>
+          <p>Inputs, layout, feedback, and display staples.</p>
+        </div>
+        <div class="grid catalog">
+          <div class="card">
+            <h3>Inputs</h3>
+            <div class="pill-list">
+              <span>button</span>
+              <span>icon_button</span>
+              <span>input</span>
+              <span>select</span>
+              <span>textarea</span>
+              <span>checkbox</span>
+              <span>radio</span>
+              <span>switch</span>
+              <span>slider</span>
+              <span>date_picker</span>
+              <span>search_bar</span>
+              <span>rating</span>
+            </div>
+          </div>
+          <div class="card">
+            <h3>Layout</h3>
+            <div class="pill-list">
+              <span>card</span>
+              <span>divider</span>
+              <span>drawer</span>
+              <span>tabs</span>
+              <span>app_bar</span>
+              <span>bottom_nav</span>
+              <span>navigation_rail</span>
+              <span>table</span>
+              <span>list_tile</span>
+              <span>pagination</span>
+              <span>breadcrumb</span>
+              <span>page_header</span>
+              <span>timeline</span>
+            </div>
+          </div>
+          <div class="card">
+            <h3>Feedback</h3>
+            <div class="pill-list">
+              <span>alert</span>
+              <span>banner</span>
+              <span>toast</span>
+              <span>snackbar</span>
+              <span>dialog</span>
+              <span>bottom_sheet</span>
+              <span>progress</span>
+              <span>skeleton</span>
+              <span>empty_state</span>
+            </div>
+          </div>
+          <div class="card">
+            <h3>Display</h3>
+            <div class="pill-list">
+              <span>avatar</span>
+              <span>badge</span>
+              <span>chip</span>
+              <span>tooltip</span>
+              <span>dropdown_menu</span>
+              <span>stat_card</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="presets" class="section container">
+        <div class="section-head">
+          <h2>Design presets</h2>
+          <p>Pick a style during init and extend it in your app theme.</p>
+        </div>
+        <div class="grid presets">
+          <div class="card preset">
+            <h3>Default</h3>
+            <p>Balanced tokens with a clean radius.</p>
+            <ul>
+              <li>Radius 8</li>
+              <li>Border 1px</li>
+              <li>Seed blue</li>
+            </ul>
+          </div>
+          <div class="card preset">
+            <h3>Brutalist</h3>
+            <p>Hard edges and high contrast.</p>
+            <ul>
+              <li>Radius 0</li>
+              <li>Border 2px</li>
+              <li>Seed black</li>
+            </ul>
+          </div>
+          <div class="card preset">
+            <h3>Soft</h3>
+            <p>Rounder surfaces and gentle fills.</p>
+            <ul>
+              <li>Radius 16</li>
+              <li>Border 1px</li>
+              <li>Seed purple</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section class="section container">
+        <div class="cta">
+          <div>
+            <h2>Ready to copy your next widget?</h2>
+            <p>Run flad init and start adding components right away.</p>
+          </div>
+          <a class="btn primary" href="#quickstart">Start now</a>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="container footer-inner">
+        <div>Flad CLI - MIT Licensed</div>
+        <div>Built for Flutter teams that ship fast.</div>
+      </div>
+    </footer>
+  </body>
+</html>

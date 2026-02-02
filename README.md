@@ -29,7 +29,13 @@ plain Dart files. No runtime package dependency. You own the code.
 - Dart SDK (>= 3.3.0)
 - A Flutter project (must have a `lib/` directory)
 
-## Install (project-local)
+## Install
+
+```
+dart pub global activate flad_cli
+```
+
+Or project-local:
 
 ```
 flutter pub add flad_cli
@@ -40,8 +46,7 @@ flutter pub add flad_cli
 ```
 flad init
 flad add button
-flad add input
-flad add select
+flad add input card badge
 ```
 
 If installed locally:
@@ -51,94 +56,196 @@ dart run flad_cli init
 dart run flad_cli add button
 ```
 
+## Documentation website
+
+The GitHub Pages documentation lives at:
+
+```
+https://shohjahon-n.github.io/flad
+```
+
 ## How it works
 
 flad selects a component template and:
 
 - verifies `lib/` exists
 - creates the target directory
-- prevents overwriting existing files
+- resolves component dependencies automatically
+- prevents overwriting existing files (unless `--overwrite`)
 - prints clear console messages
 
 Copied files are **independent** of the CLI and work on their own.
 
 ## Commands
 
-| Command                             | Description                                      |
-| ----------------------------------- | ------------------------------------------------ |
-| `flad init`                         | Create/save target directory (default `lib/ui`). |
-| `flad add <component>`              | Add a single component.                          |
-| `flad add <component> <component>`  | Add multiple components at once.                 |
-| `flad add --all`                    | Add all components.                              |
-| `flad add <component> --path <dir>` | Add to a custom directory.                       |
-| `flad list`                         | List available components.                       |
-| `flad list --plain`                 | List only component names.                       |
-| `flad list --json`                  | List as JSON for scripts.                        |
-| `flad preview <component>`          | Preview component details.                       |
-| `flad config`                       | Show saved config.                               |
-| `flad doctor`                       | Check project + config health.                   |
+| Command | Description |
+| --- | --- |
+| `flad init` | Create/save target directory and generate theme. |
+| `flad init --style <name>` | Init with a design preset (`default`, `brutalist`, `soft`). |
+| `flad add <component>` | Add a single component (with auto-dependency resolution). |
+| `flad add <comp> <comp>` | Add multiple components at once. |
+| `flad add --all` | Add all components. |
+| `flad add` | Interactive component selection. |
+| `flad add --overwrite` | Replace existing component files. |
+| `flad add --registry` | Fetch components from the remote registry. |
+| `flad add --dry-run` | Preview file writes without changes. |
+| `flad diff <component>` | Compare local file against bundled version. |
+| `flad remove <component>` | Remove a component file. |
+| `flad remove --all` | Remove all component files. |
+| `flad list` | List components by category. |
+| `flad list --plain` | List only component names. |
+| `flad list --json` | List as JSON (includes category field). |
+| `flad preview <component>` | Preview component details and dependencies. |
+| `flad config` | Show saved config. |
+| `flad config --set <dir>` | Update target directory. |
+| `flad config --reset` | Remove config file. |
+| `flad doctor` | Check project + config health. |
 
-## Init-time path prompt
+## Design presets
 
-When you run `flad init`, the CLI asks for a target directory. Default:
+When you run `flad init`, the CLI asks for a design style. Each style generates
+a `theme.dart` file with pre-configured tokens:
+
+| Style | Radius | Border | Seed color | Vibe |
+| --- | --- | --- | --- | --- |
+| `default` | 8 | 1px | Blue | Clean, balanced |
+| `brutalist` | 0 | 2px | Black | Sharp, bold |
+| `soft` | 16 | 1px | Purple | Rounded, pastel |
+
+Usage in your app:
+
+```dart
+import 'ui/theme.dart';
+
+void main() {
+  final themes = FladTheme.apply();
+  runApp(MaterialApp(
+    theme: themes.light,
+    darkTheme: themes.dark,
+    home: MyApp(),
+  ));
+}
+```
+
+## Dependency resolution
+
+Components can depend on other components. When you add a component, its
+dependencies are added automatically:
 
 ```
-lib/ui
+$ flad add date_picker
+[flad] Including dependencies: button, input
+[flad] Added: lib/ui/button.dart
+[flad] Added: lib/ui/input.dart
+[flad] Added: lib/ui/date_picker.dart
 ```
 
-The chosen path is saved to `.flad.json` and used by future `add` commands.
+## Interactive selection
 
-## Examples
+Run `flad add` without arguments to pick components interactively:
 
 ```
-flad init
-flad add button
-flad add button card input
-flad add button --path lib/shared/ui
-flad preview button
+$ flad add
+Select components to add (comma-separated numbers):
+
+  Inputs
+     1. button   Buttons with variants, sizes, and loading states.
+     2. checkbox  Custom checkbox with tristate support.
+     ...
+
+Components (e.g. 1,3,5 or 1-5):
 ```
 
-## Current components
+## Diffing changes
 
-| Component       | Description                                         |
-| --------------- | --------------------------------------------------- |
-| button          | Buttons with variants, sizes, and loading states.   |
-| input           | Text input with labels, helpers, and prefix/suffix. |
-| select          | Custom dropdown select with overlay menu.           |
-| card            | Elevated surface with border and radius.            |
-| badge           | Small status label (solid/outline/soft).            |
-| checkbox        | Custom checkbox with tristate support.              |
-| switch          | Adaptive switch with label support.                 |
-| textarea        | Multiline input with iOS adaptive mode.             |
-| radio           | Custom radio button with label support.             |
-| tabs            | Segmented-style tabs with views.                    |
-| toast           | Snackbar-based toast helper.                        |
-| dialog          | Adaptive alert dialog helper.                       |
-| dropdown_menu   | Popup menu anchored to any widget.                  |
-| date_picker     | Adaptive date picker helper.                        |
-| slider          | Adaptive slider with theme tokens.                  |
-| avatar          | Avatar with image or initials.                      |
-| list_tile       | Custom list tile with hover and border.             |
-| progress        | Linear or circular progress indicator.              |
-| table           | Lightweight data table widget.                      |
-| chip            | Tag/chip with variants and delete.                  |
-| tooltip         | Themed tooltip wrapper.                             |
-| bottom_sheet    | Adaptive bottom sheet helper.                       |
-| snackbar        | Snackbar helper with variants.                      |
-| app_bar         | App bar wrapper with theming tokens.                |
-| bottom_nav      | Bottom navigation bar wrapper.                      |
-| navigation_rail | Navigation rail wrapper.                            |
-| drawer          | Drawer with header/footer slots.                    |
-| search_bar      | Search input with icons and theming.                |
-| alert           | Alert/banner with variants.                         |
-| empty_state     | Empty state with icon, message, and action.         |
-| skeleton        | Animated skeleton loader block.                     |
-| divider         | Horizontal or vertical divider.                     |
-| pagination      | Page navigation control.                            |
-| breadcrumb      | Breadcrumb trail with separators.                   |
-| rating          | Star rating display and input.                      |
+After customizing a component, compare it against the bundled version:
+
+```
+$ flad diff button
+[flad] button has local modifications.
+[flad] Local: 285 lines
+[flad] Bundled: 279 lines
+  L42:
+    - radius: 12,
+    + radius: 16,
+[flad] To reset: flad add button --overwrite
+```
+
+## Components
+
+### Inputs
+| Component | Description |
+| --- | --- |
+| button | Buttons with variants, sizes, and loading states. |
+| icon_button | Icon-only button with variants and sizes. |
+| input | Text input with labels, helpers, and prefix/suffix. |
+| select | Custom dropdown select with overlay menu. |
+| textarea | Multiline input with iOS adaptive mode. |
+| checkbox | Custom checkbox with tristate support. |
+| radio | Custom radio button with label support. |
+| switch | Adaptive switch with label support. |
+| slider | Adaptive slider with theme tokens. |
+| date_picker | Adaptive date picker helper. |
+| search_bar | Search input with icons and theming. |
+| rating | Star rating display and input. |
+
+### Layout
+| Component | Description |
+| --- | --- |
+| card | Elevated surface with border and radius. |
+| divider | Horizontal or vertical divider. |
+| drawer | Drawer with header/footer slots. |
+| tabs | Segmented-style tabs with views. |
+| app_bar | App bar wrapper with theming tokens. |
+| bottom_nav | Bottom navigation bar wrapper. |
+| navigation_rail | Navigation rail wrapper. |
+| table | Lightweight data table widget. |
+| list_tile | Custom list tile with hover and border. |
+| pagination | Page navigation control. |
+| breadcrumb | Breadcrumb trail with separators. |
+| page_header | Page header with title, subtitle, and actions. |
+| timeline | Vertical timeline list with active markers. |
+
+### Feedback
+| Component | Description |
+| --- | --- |
+| alert | Alert/banner with variants. |
+| banner | Banner callout with icon, message, and action. |
+| toast | Snackbar-based toast helper. |
+| snackbar | Snackbar helper with variants. |
+| dialog | Adaptive alert dialog helper. |
+| bottom_sheet | Adaptive bottom sheet helper. |
+| progress | Linear or circular progress indicator. |
+| skeleton | Animated skeleton loader block. |
+| empty_state | Empty state with icon, message, and action. |
+
+### Display
+| Component | Description |
+| --- | --- |
+| avatar | Avatar with image or initials. |
+| badge | Small status label (solid/outline/soft). |
+| chip | Tag/chip with variants and delete. |
+| tooltip | Themed tooltip wrapper. |
+| dropdown_menu | Popup menu anchored to any widget. |
+| stat_card | Metric card with label, value, and delta. |
 
 ## Theming
 
 Each component includes a `ThemeExtension` for styling. No hardcoded colors.
-You can override tokens via `ThemeData.extensions` in your app.
+You can override tokens via `ThemeData.extensions` in your app:
+
+```dart
+MaterialApp(
+  theme: ThemeData(
+    extensions: [
+      FladButtonTheme(
+        solidBackground: Colors.indigo,
+        solidForeground: Colors.white,
+        // ...
+      ),
+    ],
+  ),
+)
+```
+
+Or use the generated `FladTheme` from `flad init` for a cohesive look.

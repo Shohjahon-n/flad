@@ -1,3 +1,27 @@
+## 0.1.0 - 2026-02-02
+- Add GitHub Pages documentation site in `docs/`.
+- Add new components: icon_button, banner, page_header, stat_card, timeline.
+- Add tests for `flad init --style` and interactive `flad add` selection.
+- Update README with docs link and refreshed component catalog.
+
+## 0.0.7 - 2026-02-03
+- Add `flad init --style` with design presets (default, brutalist, soft).
+- Add `flad diff` to compare local files against bundled versions.
+- Add `flad remove` and `flad remove --all` to delete component files.
+- Add `flad add --overwrite` to replace existing files.
+- Add `flad add --registry` to fetch components from a remote registry.
+- Add interactive component selection when running `flad add` without arguments.
+- Add component dependency resolution (auto-adds required components).
+- Add component categories (Inputs, Layout, Feedback, Display) to `flad list`.
+- Add category field to `flad list --json` output.
+- Add new components: accordion, stepper, otp_input, toggle_group, popover,
+  shimmer, color_picker, time_picker.
+- Add theme generation on `flad init` with `FladTheme` helper class.
+- Add `style` field to `.flad.json` config.
+- Add `dart test` step to CI pipeline.
+- Expand test suite from 5 to 23 integration tests.
+- Update README with full command reference and usage examples.
+
 ## 0.0.6 - 2026-01-31
 - Add `flad preview` for component details.
 - Refresh docs and examples.

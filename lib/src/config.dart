@@ -7,13 +7,15 @@ import 'constants.dart';
 
 class FladConfig {
   final String targetDir;
+  final String? style;
 
   /// Creates a config instance with the provided target directory.
-  const FladConfig({required this.targetDir});
+  const FladConfig({required this.targetDir, this.style});
 
   /// Serializes this config to JSON.
   Map<String, dynamic> toJson() => {
         'targetDir': targetDir,
+        if (style != null) 'style': style,
       };
 
   /// Builds a config from JSON.
@@ -22,7 +24,11 @@ class FladConfig {
     if (targetDir is! String || targetDir.trim().isEmpty) {
       throw const FormatException('Invalid targetDir in config.');
     }
-    return FladConfig(targetDir: targetDir.trim());
+    final style = json['style'];
+    return FladConfig(
+      targetDir: targetDir.trim(),
+      style: style is String ? style.trim() : null,
+    );
   }
 }
 

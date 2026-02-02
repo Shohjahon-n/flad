@@ -10,6 +10,7 @@ import 'templates/radio.dart';
 import 'templates/tabs.dart';
 import 'templates/toast.dart';
 import 'templates/dialog.dart';
+import 'templates/icon_button.dart';
 import 'templates/dropdown_menu.dart';
 import 'templates/date_picker.dart';
 import 'templates/slider.dart';
@@ -27,12 +28,16 @@ import 'templates/navigation_rail.dart';
 import 'templates/drawer.dart';
 import 'templates/search_bar.dart';
 import 'templates/alert.dart';
+import 'templates/banner.dart';
 import 'templates/empty_state.dart';
 import 'templates/skeleton.dart';
 import 'templates/divider.dart';
 import 'templates/pagination.dart';
 import 'templates/breadcrumb.dart';
+import 'templates/page_header.dart';
 import 'templates/rating.dart';
+import 'templates/stat_card.dart';
+import 'templates/timeline.dart';
 
 /// Component name to template string mapping.
 const componentTemplates = {
@@ -48,6 +53,7 @@ const componentTemplates = {
   'tabs': tabsTemplate,
   'toast': toastTemplate,
   'dialog': dialogTemplate,
+  'icon_button': iconButtonTemplate,
   'dropdown_menu': dropdownMenuTemplate,
   'date_picker': datePickerTemplate,
   'slider': sliderTemplate,
@@ -65,12 +71,81 @@ const componentTemplates = {
   'drawer': drawerTemplate,
   'search_bar': searchBarTemplate,
   'alert': alertTemplate,
+  'banner': bannerTemplate,
   'empty_state': emptyStateTemplate,
   'skeleton': skeletonTemplate,
   'divider': dividerTemplate,
   'pagination': paginationTemplate,
   'breadcrumb': breadcrumbTemplate,
+  'page_header': pageHeaderTemplate,
   'rating': ratingTemplate,
+  'stat_card': statCardTemplate,
+  'timeline': timelineTemplate,
+};
+
+/// Component categories for grouped listing.
+const componentCategories = {
+  'Inputs': [
+    'button',
+    'input',
+    'select',
+    'textarea',
+    'checkbox',
+    'radio',
+    'switch',
+    'slider',
+    'date_picker',
+    'search_bar',
+    'icon_button',
+    'rating',
+  ],
+  'Layout': [
+    'card',
+    'divider',
+    'drawer',
+    'tabs',
+    'app_bar',
+    'bottom_nav',
+    'navigation_rail',
+    'table',
+    'list_tile',
+    'pagination',
+    'breadcrumb',
+    'page_header',
+    'timeline',
+  ],
+  'Feedback': [
+    'alert',
+    'banner',
+    'toast',
+    'snackbar',
+    'dialog',
+    'bottom_sheet',
+    'progress',
+    'skeleton',
+    'empty_state',
+  ],
+  'Display': [
+    'avatar',
+    'badge',
+    'chip',
+    'tooltip',
+    'dropdown_menu',
+    'stat_card',
+  ],
+};
+
+/// Component dependencies — which components require others.
+const componentDependencies = <String, List<String>>{
+  'search_bar': ['input'],
+  'dropdown_menu': ['button'],
+  'date_picker': ['button', 'input'],
+  'dialog': ['button'],
+  'bottom_sheet': ['button'],
+  'snackbar': ['button'],
+  'toast': ['button'],
+  'pagination': ['button'],
+  'empty_state': ['button'],
 };
 
 /// Component name to short description mapping.
@@ -87,6 +162,7 @@ const componentDescriptions = {
   'tabs': 'Segmented-style tabs with views.',
   'toast': 'Snackbar-based toast helper.',
   'dialog': 'Adaptive alert dialog helper.',
+  'icon_button': 'Icon-only button with variants and sizes.',
   'dropdown_menu': 'Popup menu anchored to any widget.',
   'date_picker': 'Adaptive date picker helper.',
   'slider': 'Adaptive slider with theme tokens.',
@@ -104,10 +180,14 @@ const componentDescriptions = {
   'drawer': 'Drawer with header/footer slots.',
   'search_bar': 'Search input with icons and theming.',
   'alert': 'Alert/banner with variants.',
+  'banner': 'Banner callout with icon, message, and action.',
   'empty_state': 'Empty state with icon, message, and action.',
   'skeleton': 'Animated skeleton loader block.',
   'divider': 'Horizontal or vertical divider.',
   'pagination': 'Page navigation control.',
   'breadcrumb': 'Breadcrumb trail with separators.',
+  'page_header': 'Page header with title, subtitle, and actions.',
   'rating': 'Star rating display and input.',
+  'stat_card': 'Metric card with label, value, and delta.',
+  'timeline': 'Vertical timeline list with active markers.',
 };
