@@ -58,10 +58,10 @@ dart run flad_cli add button
 
 ## Documentation website
 
-The GitHub Pages documentation lives at:
+Docs are live at:
 
 ```
-https://shohjahon-n.github.io/flad
+https://flad-docs.netlify.app
 ```
 
 ## How it works

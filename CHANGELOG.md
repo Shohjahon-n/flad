@@ -1,3 +1,6 @@
+## 0.1.1 - 2026-02-02
+- Publish Netlify docs link and update package documentation metadata.
+
 ## 0.1.0 - 2026-02-02
 - Add GitHub Pages documentation site in `docs/`.
 - Add new components: icon_button, banner, page_header, stat_card, timeline.
