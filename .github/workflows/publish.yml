@@ -1,0 +1,46 @@
+name: Publish to pub.dev
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: dart-lang/setup-dart@v1
+        with:
+          sdk: stable
+
+      - run: dart pub get
+
+      - name: Analyze
+        run: dart analyze
+
+      - name: Test
+        run: dart test
+
+  publish:
+    needs: verify
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: dart-lang/setup-dart@v1
+        with:
+          sdk: stable
+
+      - run: dart pub get
+
+      - name: Update version from tag
+        run: |
+          VERSION="${GITHUB_REF_NAME#v}"
+          sed -i "s/^version: .*/version: $VERSION/" pubspec.yaml
+
+      - name: Publish to pub.dev
+        run: dart pub publish --force

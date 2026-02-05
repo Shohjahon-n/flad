@@ -1,3 +1,11 @@
+## 0.2.0 - 2026-02-06
+- Refactor: split monolithic `cli.dart` (1362 lines) into 11 focused part files.
+- Add 15 new edge-case tests (25 → 40 total).
+- Add GitHub Actions publish workflow for automated pub.dev releases on tag push.
+- Add CONTRIBUTING.md, issue templates, and PR template.
+- Add `topics` field to pubspec.yaml for better pub.dev discoverability.
+- Update documentation link to GitHub Pages.
+
 ## 0.1.1 - 2026-02-02
 - Publish Netlify docs link and update package documentation metadata.
 

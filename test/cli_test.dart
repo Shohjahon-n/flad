@@ -609,4 +609,187 @@ void main() {
       }
     }
   });
+
+  // ── Edge-case tests ──
+
+  test('--help prints usage without error', () async {
+    final dir = await Directory.systemTemp.createTemp('flad_cli_test');
+    addTearDown(() async => dir.delete(recursive: true));
+
+    final result = await _runCli(['--help'], workingDir: dir);
+    expect(result.exitCode, 0);
+    expect(result.stdout, contains('flad - Flutter UI component copier'));
+  });
+
+  test('no command prints usage', () async {
+    final dir = await Directory.systemTemp.createTemp('flad_cli_test');
+    addTearDown(() async => dir.delete(recursive: true));
+
+    final result = await _runCli([], workingDir: dir);
+    expect(result.exitCode, 0);
+    expect(result.stdout, contains('flad - Flutter UI component copier'));
+  });
+
+  test('add --all with component names is an error', () async {
+    final dir = await Directory.systemTemp.createTemp('flad_cli_test');
+    addTearDown(() async => dir.delete(recursive: true));
+    await Directory(p.join(dir.path, 'lib')).create();
+
+    final result = await _runCli(
+      ['add', '--all', 'button'],
+      workingDir: dir,
+    );
+    expect(result.exitCode, 64);
+    expect(result.stderr, contains('Do not pass component names'));
+  });
+
+  test('remove --all with component names is an error', () async {
+    final dir = await Directory.systemTemp.createTemp('flad_cli_test');
+    addTearDown(() async => dir.delete(recursive: true));
+    await Directory(p.join(dir.path, 'lib')).create();
+
+    final result = await _runCli(
+      ['remove', '--all', 'button'],
+      workingDir: dir,
+    );
+    expect(result.exitCode, 64);
+    expect(result.stderr, contains('Do not pass component names'));
+  });
+
+  test('remove without component names is an error', () async {
+    final dir = await Directory.systemTemp.createTemp('flad_cli_test');
+    addTearDown(() async => dir.delete(recursive: true));
+    await Directory(p.join(dir.path, 'lib')).create();
+
+    final result = await _runCli(['remove'], workingDir: dir);
+    expect(result.exitCode, 64);
+    expect(result.stderr, contains('Missing component name'));
+  });
+
+  test('preview without component name is an error', () async {
+    final dir = await Directory.systemTemp.createTemp('flad_cli_test');
+    addTearDown(() async => dir.delete(recursive: true));
+
+    final result = await _runCli(['preview'], workingDir: dir);
+    expect(result.exitCode, 64);
+    expect(result.stderr, contains('Missing component name'));
+  });
+
+  test('preview unknown component reports error', () async {
+    final dir = await Directory.systemTemp.createTemp('flad_cli_test');
+    addTearDown(() async => dir.delete(recursive: true));
+
+    final result =
+        await _runCli(['preview', 'nonexistent'], workingDir: dir);
+    expect(result.exitCode, 64);
+    expect(result.stderr, contains('Unknown component'));
+  });
+
+  test('diff without component name is an error', () async {
+    final dir = await Directory.systemTemp.createTemp('flad_cli_test');
+    addTearDown(() async => dir.delete(recursive: true));
+
+    final result = await _runCli(['diff'], workingDir: dir);
+    expect(result.exitCode, 64);
+    expect(result.stderr, contains('Missing component name'));
+  });
+
+  test('diff unknown component reports error', () async {
+    final dir = await Directory.systemTemp.createTemp('flad_cli_test');
+    addTearDown(() async => dir.delete(recursive: true));
+    await Directory(p.join(dir.path, 'lib')).create();
+
+    final result = await _runCli(
+      ['diff', 'nonexistent', '--path', 'lib/ui'],
+      workingDir: dir,
+    );
+    expect(result.exitCode, 64);
+    expect(result.stderr, contains('Unknown component'));
+  });
+
+  test('list --json and --plain together is an error', () async {
+    final dir = await Directory.systemTemp.createTemp('flad_cli_test');
+    addTearDown(() async => dir.delete(recursive: true));
+
+    final result = await _runCli(
+      ['list', '--json', '--plain'],
+      workingDir: dir,
+    );
+    expect(result.exitCode, 64);
+    expect(result.stderr, contains('Use either --json or --plain'));
+  });
+
+  test('add fails when not in a Flutter project', () async {
+    final dir = await Directory.systemTemp.createTemp('flad_cli_test');
+    addTearDown(() async => dir.delete(recursive: true));
+    // No lib/ directory
+
+    final result = await _runCli(
+      ['add', 'button', '--path', 'lib/ui'],
+      workingDir: dir,
+    );
+    expect(result.exitCode, 1);
+    expect(result.stderr, contains('Not a Flutter project'));
+  });
+
+  test('add --all --dry-run lists all without writing files', () async {
+    final dir = await Directory.systemTemp.createTemp('flad_cli_test');
+    addTearDown(() async => dir.delete(recursive: true));
+    await Directory(p.join(dir.path, 'lib')).create();
+
+    final result = await _runCli(
+      ['add', '--all', '--path', 'lib/ui', '--dry-run'],
+      workingDir: dir,
+    );
+
+    expect(result.exitCode, 0);
+    expect(result.stdout, contains('Would add'));
+    expect(
+      File(p.join(dir.path, 'lib/ui/button.dart')).existsSync(),
+      isFalse,
+    );
+  });
+
+  test('config shows current settings after init', () async {
+    final dir = await Directory.systemTemp.createTemp('flad_cli_test');
+    addTearDown(() async => dir.delete(recursive: true));
+    await Directory(p.join(dir.path, 'lib')).create();
+
+    await _runCli(
+      ['init', '--path', 'lib/ui', '--style', 'soft'],
+      workingDir: dir,
+    );
+
+    final result = await _runCli(['config'], workingDir: dir);
+    expect(result.exitCode, 0);
+    expect(result.stdout, contains('Target directory: lib/ui'));
+  });
+
+  test('doctor reports OK after init', () async {
+    final dir = await Directory.systemTemp.createTemp('flad_cli_test');
+    addTearDown(() async => dir.delete(recursive: true));
+    await Directory(p.join(dir.path, 'lib')).create();
+
+    await _runCli(
+      ['init', '--path', 'lib/ui', '--style', 'soft'],
+      workingDir: dir,
+    );
+
+    final result = await _runCli(['doctor'], workingDir: dir);
+    expect(result.exitCode, 0);
+    expect(result.stdout, contains('Config OK'));
+    expect(result.stdout, contains('Target directory exists'));
+  });
+
+  test('config --set and --reset together is an error', () async {
+    final dir = await Directory.systemTemp.createTemp('flad_cli_test');
+    addTearDown(() async => dir.delete(recursive: true));
+
+    final result = await _runCli(
+      ['config', '--set', 'lib/ui', '--reset'],
+      workingDir: dir,
+    );
+    expect(result.exitCode, 64);
+    expect(result.stderr, contains('Use either --set or --reset'));
+  });
 }
