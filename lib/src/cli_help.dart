@@ -10,6 +10,7 @@ void _printUsage(ArgParser parser) {
   stdout.writeln('  flad add <component> [--path <dir>]');
   stdout.writeln('  flad add <component> <component> [--path <dir>]');
   stdout.writeln('  flad add --all [--path <dir>]');
+  stdout.writeln('  flad add <component> --registry [--registry-url <url>]');
   stdout.writeln('  flad diff <component> [--path <dir>]');
   stdout.writeln('  flad remove <component> [--path <dir>]');
   stdout.writeln('  flad remove --all [--path <dir>]');
@@ -26,6 +27,9 @@ void _printUsage(ArgParser parser) {
   stdout.writeln('  flad add --all');
   stdout.writeln('  flad add button --overwrite');
   stdout.writeln('  flad add button --registry');
+  stdout.writeln(
+      '  flad add button --registry --registry-url https://example.com');
+  stdout.writeln('  flad add button --registry --offline');
   stdout.writeln('  flad diff button');
   stdout.writeln('  flad remove button');
   stdout.writeln('  flad remove --all');
@@ -52,6 +56,8 @@ void _printAddUsage(ArgParser parser) {
   stdout.writeln('  flad add <component> [--path <dir>]');
   stdout.writeln('  flad add <component> <component> [--path <dir>]');
   stdout.writeln('  flad add --all [--path <dir>]');
+  stdout.writeln('  flad add <component> --registry [--registry-url <url>]');
+  stdout.writeln('  flad add <component> --registry [--offline]');
   stdout.writeln('');
   stdout.writeln(_style('Options:', [1]));
   final addCommand = parser.commands['add'];

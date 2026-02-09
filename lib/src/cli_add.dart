@@ -148,6 +148,8 @@ Future<void> _addFromRegistry(
   String? overridePath, {
   bool dryRun = false,
   bool overwrite = false,
+  String? registryUrl,
+  bool offline = false,
 }) async {
   final ok = await ensureFlutterProject(onError: _printError);
   if (!ok) {
@@ -161,10 +163,26 @@ Future<void> _addFromRegistry(
     return;
   }
 
+  final cacheRoot = Directory(p.join('.flad', 'cache', 'registry'));
+
+  if (offline) {
+    _printInfo('Registry offline mode enabled. Using cached data only.');
+  }
+  if (registryUrl != null && registryUrl.trim().isNotEmpty) {
+    _printInfo('Using custom registry: ${registryUrl.trim()}');
+  }
   _printInfo('Fetching registry index...');
-  final index = await fetchRegistryIndex();
+  final index = await fetchRegistryIndex(
+    registryUrl: registryUrl,
+    cacheRoot: cacheRoot,
+    offline: offline,
+  );
   if (index == null) {
-    _printError('Failed to fetch registry. Check your connection.');
+    if (offline) {
+      _printError('No cached registry index found. Run once online first.');
+    } else {
+      _printError('Failed to fetch registry. Check your connection.');
+    }
     exitCode = 1;
     return;
   }
@@ -174,6 +192,8 @@ Future<void> _addFromRegistry(
 
   var added = 0;
   var skipped = 0;
+  var unknown = 0;
+  var fallbackUsed = 0;
 
   // Resolve dependencies from registry.
   final allComponents = <String>[];
@@ -210,8 +230,13 @@ Future<void> _addFromRegistry(
         dryRun: dryRun,
         overwrite: overwrite,
       );
-      if (result == _AddResult.added || result == _AddResult.dryRun) added++;
-      if (result == _AddResult.exists) skipped++;
+      if (result == _AddResult.added || result == _AddResult.dryRun) {
+        added++;
+      } else if (result == _AddResult.exists) {
+        skipped++;
+      } else if (result == _AddResult.unknown) {
+        unknown++;
+      }
       continue;
     }
 
@@ -232,17 +257,34 @@ Future<void> _addFromRegistry(
     }
 
     _printInfo('Fetching $component...');
-    final source = await fetchComponent(entry.fileUrl);
+    final source = await fetchComponent(
+      entry.fileUrl,
+      cacheRoot: cacheRoot,
+      registryUrl: index.baseUrl,
+      componentName: component,
+      offline: offline,
+    );
     if (source == null) {
-      _printError('Failed to fetch $component. Using bundled version.');
+      if (offline) {
+        _printError(
+            'Component not found in cache: $component. Using bundled version.');
+      } else {
+        _printError('Failed to fetch $component. Using bundled version.');
+      }
+      fallbackUsed++;
       final result = await _writeComponent(
         component,
         targetDir,
         dryRun: dryRun,
         overwrite: overwrite,
       );
-      if (result == _AddResult.added) added++;
-      if (result == _AddResult.exists) skipped++;
+      if (result == _AddResult.added || result == _AddResult.dryRun) {
+        added++;
+      } else if (result == _AddResult.exists) {
+        skipped++;
+      } else if (result == _AddResult.unknown) {
+        unknown++;
+      }
       continue;
     }
 
@@ -253,9 +295,25 @@ Future<void> _addFromRegistry(
   }
 
   _printSuccess('Added $added component(s) from registry.');
+  if (fallbackUsed > 0) {
+    _printWarn(
+        'Used bundled fallback for $fallbackUsed component(s) due to registry fetch issues.');
+  }
   if (skipped > 0) {
     _printWarn(
         'Skipped $skipped existing file(s). Use --overwrite to replace.');
+  }
+  if (unknown > 0) {
+    _printWarn('Unknown $unknown component(s).');
+    exitCode = 64;
+    return;
+  }
+  if (skipped > 0) {
+    exitCode = 1;
+    return;
+  }
+  if (!dryRun) {
+    _printSuccess('Ready to ship. Happy hacking!');
   }
 }
 

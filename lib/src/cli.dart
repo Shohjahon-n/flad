@@ -70,6 +70,8 @@ class FladCli {
         final dryRun = command['dry-run'] as bool;
         final overwrite = command['overwrite'] as bool;
         final useRegistry = command['registry'] as bool;
+        final registryUrl = (command['registry-url'] as String?)?.trim();
+        final offline = command['offline'] as bool;
         var components = command.rest
             .map((value) => value.trim())
             .where((value) => value.isNotEmpty)
@@ -90,12 +92,26 @@ class FladCli {
           return;
         }
 
+        if (!useRegistry && registryUrl != null && registryUrl.isNotEmpty) {
+          _printError('Use --registry-url only with --registry.');
+          exitCode = 64;
+          return;
+        }
+        if (!useRegistry && offline) {
+          _printError('Use --offline only with --registry.');
+          exitCode = 64;
+          return;
+        }
+
         final overridePath = (command['path'] as String?)?.trim();
         if (addAll) {
           await _addAll(overridePath, dryRun: dryRun, overwrite: overwrite);
         } else if (useRegistry) {
           await _addFromRegistry(components, overridePath,
-              dryRun: dryRun, overwrite: overwrite);
+              dryRun: dryRun,
+              overwrite: overwrite,
+              registryUrl: registryUrl,
+              offline: offline);
         } else {
           await _addMany(components, overridePath,
               dryRun: dryRun, overwrite: overwrite);
@@ -214,8 +230,7 @@ class FladCli {
           ..addOption(
             'style',
             abbr: 's',
-            help:
-                'Design style preset (${theme_tpl.themeStyles.join(', ')}).',
+            help: 'Design style preset (${theme_tpl.themeStyles.join(', ')}).',
             allowed: theme_tpl.themeStyles,
           )
           ..addFlag(
@@ -231,8 +246,7 @@ class FladCli {
           ..addOption(
             'path',
             abbr: 'p',
-            help:
-                'Target directory for the component (overrides init config).',
+            help: 'Target directory for the component (overrides init config).',
           )
           ..addFlag(
             'all',
@@ -255,6 +269,15 @@ class FladCli {
             abbr: 'r',
             negatable: false,
             help: 'Fetch components from the remote registry.',
+          )
+          ..addOption(
+            'registry-url',
+            help: 'Custom registry base URL (requires --registry).',
+          )
+          ..addFlag(
+            'offline',
+            negatable: false,
+            help: 'Use cached registry data only (requires --registry).',
           )
           ..addFlag(
             'help',
@@ -340,8 +363,7 @@ class FladCli {
           ..addOption(
             'path',
             abbr: 'p',
-            help:
-                'Target directory to remove from (overrides init config).',
+            help: 'Target directory to remove from (overrides init config).',
           )
           ..addFlag(
             'all',

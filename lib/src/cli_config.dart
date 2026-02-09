@@ -21,10 +21,20 @@ Future<void> _config(String? setPath, {bool reset = false}) async {
   }
 
   if (setPath != null && setPath.trim().isNotEmpty) {
-    await _ensureDirectory(setPath);
-    await writeConfig(FladConfig(targetDir: setPath.trim()));
+    final trimmedPath = setPath.trim();
+    await _ensureDirectory(trimmedPath);
+
+    String? style;
+    try {
+      style = (await readConfig())?.style;
+    } on FormatException catch (error) {
+      _printWarn('Invalid $configFileName: ${error.message}');
+      _printWarn('Saving target directory without style.');
+    }
+
+    await writeConfig(FladConfig(targetDir: trimmedPath, style: style));
     _printSuccess('Config updated: ${configPath()}');
-    _printInfo('Target directory: ${setPath.trim()}');
+    _printInfo('Target directory: $trimmedPath');
     return;
   }
 

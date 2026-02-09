@@ -386,6 +386,21 @@ void main() {
     expect(result.stdout.contains('Not found'), isTrue);
   });
 
+  test('remove returns usage error for unknown component', () async {
+    final dir = await Directory.systemTemp.createTemp('flad_cli_test');
+    addTearDown(() async => dir.delete(recursive: true));
+    await Directory(p.join(dir.path, 'lib')).create();
+
+    final result = await _runCli(
+      ['remove', 'buton', '--path', 'lib/ui'],
+      workingDir: dir,
+    );
+
+    expect(result.exitCode, 64);
+    expect(result.stderr.contains('Unknown component: buton'), isTrue);
+    expect(result.stdout.contains('Did you mean: button'), isTrue);
+  });
+
   test('remove --all removes all component files', () async {
     final dir = await Directory.systemTemp.createTemp('flad_cli_test');
     addTearDown(() async => dir.delete(recursive: true));
@@ -570,6 +585,28 @@ void main() {
     expect(json['targetDir'], 'lib/components');
   });
 
+  test('config --set preserves style from existing config', () async {
+    final dir = await Directory.systemTemp.createTemp('flad_cli_test');
+    addTearDown(() async => dir.delete(recursive: true));
+    await Directory(p.join(dir.path, 'lib')).create();
+
+    await _runCli(
+      ['init', '--path', 'lib/ui', '--style', 'soft'],
+      workingDir: dir,
+    );
+
+    final result = await _runCli(
+      ['config', '--set', 'lib/components'],
+      workingDir: dir,
+    );
+
+    expect(result.exitCode, 0);
+    final configFile = File(p.join(dir.path, '.flad.json'));
+    final json = jsonDecode(await configFile.readAsString());
+    expect(json['targetDir'], 'lib/components');
+    expect(json['style'], 'soft');
+  });
+
   test('config --reset removes config file', () async {
     final dir = await Directory.systemTemp.createTemp('flad_cli_test');
     addTearDown(() async => dir.delete(recursive: true));
@@ -679,8 +716,7 @@ void main() {
     final dir = await Directory.systemTemp.createTemp('flad_cli_test');
     addTearDown(() async => dir.delete(recursive: true));
 
-    final result =
-        await _runCli(['preview', 'nonexistent'], workingDir: dir);
+    final result = await _runCli(['preview', 'nonexistent'], workingDir: dir);
     expect(result.exitCode, 64);
     expect(result.stderr, contains('Unknown component'));
   });
@@ -717,6 +753,49 @@ void main() {
     );
     expect(result.exitCode, 64);
     expect(result.stderr, contains('Use either --json or --plain'));
+  });
+
+  test('add --registry-url without --registry is an error', () async {
+    final dir = await Directory.systemTemp.createTemp('flad_cli_test');
+    addTearDown(() async => dir.delete(recursive: true));
+    await Directory(p.join(dir.path, 'lib')).create();
+
+    final result = await _runCli(
+      ['add', 'button', '--registry-url', 'https://example.com'],
+      workingDir: dir,
+    );
+
+    expect(result.exitCode, 64);
+    expect(result.stderr, contains('Use --registry-url only with --registry.'));
+  });
+
+  test('add --offline without --registry is an error', () async {
+    final dir = await Directory.systemTemp.createTemp('flad_cli_test');
+    addTearDown(() async => dir.delete(recursive: true));
+    await Directory(p.join(dir.path, 'lib')).create();
+
+    final result = await _runCli(
+      ['add', 'button', '--offline'],
+      workingDir: dir,
+    );
+
+    expect(result.exitCode, 64);
+    expect(result.stderr, contains('Use --offline only with --registry.'));
+  });
+
+  test('add --registry --offline fails cleanly when cache is missing',
+      () async {
+    final dir = await Directory.systemTemp.createTemp('flad_cli_test');
+    addTearDown(() async => dir.delete(recursive: true));
+    await Directory(p.join(dir.path, 'lib')).create();
+
+    final result = await _runCli(
+      ['add', 'button', '--registry', '--offline'],
+      workingDir: dir,
+    );
+
+    expect(result.exitCode, 1);
+    expect(result.stderr, contains('No cached registry index found'));
   });
 
   test('add fails when not in a Flutter project', () async {

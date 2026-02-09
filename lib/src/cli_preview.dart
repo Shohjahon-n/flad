@@ -10,8 +10,7 @@ Future<void> _preview(String component, String? overridePath) async {
     if (suggestions.isNotEmpty) {
       _printInfo('Did you mean: ${suggestions.join(', ')}');
     } else {
-      _printInfo(
-          'Available components: ${componentTemplates.keys.join(', ')}');
+      _printInfo('Available components: ${componentTemplates.keys.join(', ')}');
     }
     exitCode = 64;
     return;

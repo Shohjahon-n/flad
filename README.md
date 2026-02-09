@@ -88,6 +88,8 @@ Copied files are **independent** of the CLI and work on their own.
 | `flad add` | Interactive component selection. |
 | `flad add --overwrite` | Replace existing component files. |
 | `flad add --registry` | Fetch components from the remote registry. |
+| `flad add --registry-url <url> --registry` | Fetch from a custom registry endpoint. |
+| `flad add --offline --registry` | Use cached registry data only. |
 | `flad add --dry-run` | Preview file writes without changes. |
 | `flad diff <component>` | Compare local file against bundled version. |
 | `flad remove <component>` | Remove a component file. |
@@ -138,6 +140,20 @@ $ flad add date_picker
 [flad] Added: lib/ui/button.dart
 [flad] Added: lib/ui/input.dart
 [flad] Added: lib/ui/date_picker.dart
+```
+
+## Custom registry
+
+Point `flad` to your own component registry when needed:
+
+```bash
+flad add button --registry --registry-url https://your-host/flad-registry
+```
+
+Work offline from cache:
+
+```bash
+flad add button --registry --offline
 ```
 
 ## Interactive selection

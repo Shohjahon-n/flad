@@ -1,3 +1,18 @@
+## 0.2.2 - 2026-02-09
+- Add: registry offline mode via `flad add --registry --offline`.
+- Add: registry cache fallback for index/component fetches (network failure now reuses cached data).
+- Remove: registry token authentication flags to keep the public registry flow fully open by default.
+- Test: add template quality/syntax smoke tests and registry cache/offline tests.
+- Cleanup: remove stale unregistered template files so `lib/src/templates/` matches `componentTemplates`.
+
+## 0.2.1 - 2026-02-09
+- Fix: `flad add --registry` now reports unknown components correctly and returns deterministic exit codes on partial failures.
+- Fix: `flad remove <component>` now returns exit code `64` for unknown component names.
+- Fix: `flad config --set <dir>` now preserves the existing saved `style` in `.flad.json`.
+- Add: `flad add --registry-url <url> --registry` for custom/private registry endpoints.
+- Improve: registry HTTP client now uses request timeout + retry for transient failures.
+- Test: add regression coverage for remove/config/registry-url behaviors and new registry integration tests with local HTTP server.
+
 ## 0.2.0 - 2026-02-06
 - Refactor: split monolithic `cli.dart` (1362 lines) into 11 focused part files.
 - Add 15 new edge-case tests (25 → 40 total).

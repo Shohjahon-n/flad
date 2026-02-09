@@ -188,7 +188,5 @@ int _editDistance(String a, String b) {
 String _toPascalCase(String value) {
   final parts =
       value.split(RegExp(r'[_\\s-]+')).where((part) => part.isNotEmpty);
-  return parts
-      .map((part) => part[0].toUpperCase() + part.substring(1))
-      .join();
+  return parts.map((part) => part[0].toUpperCase() + part.substring(1)).join();
 }

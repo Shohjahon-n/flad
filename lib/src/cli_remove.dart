@@ -20,6 +20,7 @@ Future<void> _removeMany(
 
   var removed = 0;
   var notFound = 0;
+  var unknown = 0;
 
   final seen = <String>{};
   for (final component in components) {
@@ -31,6 +32,7 @@ Future<void> _removeMany(
       if (suggestions.isNotEmpty) {
         _printInfo('Did you mean: ${suggestions.join(', ')}');
       }
+      unknown++;
       continue;
     }
 
@@ -51,6 +53,13 @@ Future<void> _removeMany(
     if (notFound > 0) {
       _printWarn('$notFound file(s) not found.');
     }
+    if (unknown > 0) {
+      _printWarn('Unknown $unknown component(s).');
+    }
+  }
+
+  if (unknown > 0) {
+    exitCode = 64;
   }
 }
 
