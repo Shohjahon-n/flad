@@ -1,3 +1,10 @@
+## 0.3.0 - 2026-02-22
+- Add: `stepper` — multi-step process indicator with horizontal/vertical orientation, animated content transitions, and Back/Next navigation.
+- Add: `accordion` — expandable content sections with animated expand/collapse, optional multi-expand mode, and leading icon support.
+- Add: `otp_input` — one-time password input with individual digit fields, auto-focus advancement, backspace navigation, obscure mode, and error state.
+- Add: `color_picker` — inline color selection widget with predefined swatch palette, animated selection indicator, and optional hex input field.
+- All four components follow the `FladXxxTheme` / `ThemeExtension` pattern with no hardcoded colors.
+
 ## 0.2.2 - 2026-02-09
 - Add: registry offline mode via `flad add --registry --offline`.
 - Add: registry cache fallback for index/component fetches (network failure now reuses cached data).

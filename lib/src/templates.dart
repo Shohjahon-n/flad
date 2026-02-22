@@ -38,6 +38,10 @@ import 'templates/page_header.dart';
 import 'templates/rating.dart';
 import 'templates/stat_card.dart';
 import 'templates/timeline.dart';
+import 'templates/stepper.dart';
+import 'templates/accordion.dart';
+import 'templates/otp_input.dart';
+import 'templates/color_picker.dart';
 
 /// Component name to template string mapping.
 const componentTemplates = {
@@ -81,6 +85,10 @@ const componentTemplates = {
   'rating': ratingTemplate,
   'stat_card': statCardTemplate,
   'timeline': timelineTemplate,
+  'stepper': stepperTemplate,
+  'accordion': accordionTemplate,
+  'otp_input': otpInputTemplate,
+  'color_picker': colorPickerTemplate,
 };
 
 /// Component categories for grouped listing.
@@ -98,6 +106,8 @@ const componentCategories = {
     'search_bar',
     'icon_button',
     'rating',
+    'otp_input',
+    'color_picker',
   ],
   'Layout': [
     'card',
@@ -113,6 +123,8 @@ const componentCategories = {
     'breadcrumb',
     'page_header',
     'timeline',
+    'stepper',
+    'accordion',
   ],
   'Feedback': [
     'alert',
@@ -146,6 +158,7 @@ const componentDependencies = <String, List<String>>{
   'toast': ['button'],
   'pagination': ['button'],
   'empty_state': ['button'],
+  'stepper': ['button'],
 };
 
 /// Component name to short description mapping.
@@ -190,4 +203,8 @@ const componentDescriptions = {
   'rating': 'Star rating display and input.',
   'stat_card': 'Metric card with label, value, and delta.',
   'timeline': 'Vertical timeline list with active markers.',
+  'stepper': 'Multi-step process indicator with navigation controls.',
+  'accordion': 'Expandable content sections with animated transitions.',
+  'otp_input': 'One-time password input with individual digit fields.',
+  'color_picker': 'Color selection widget with predefined palette and custom input.',
 };
